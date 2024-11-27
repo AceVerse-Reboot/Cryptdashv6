@@ -1,0 +1,297 @@
+import React, { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AlertCircle, TrendingUp, TrendingDown, Search, BookOpen, GraduationCap, ExternalLink, Info } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+const CryptoForecast = () => {
+  const [cryptoSymbol, setCryptoSymbol] = useState('ETH');
+  const [searchInput, setSearchInput] = useState('ETH');
+  const [selectedTimeframe, setSelectedTimeframe] = useState('1d');
+
+  // Example ETH data
+  const ethData = [
+    { date: '2024-01-01', open: 2200, high: 2300, low: 2150, close: 2250, volume: 15000000 },
+    { date: '2024-01-02', open: 2250, high: 2400, low: 2200, close: 2300, volume: 16000000 },
+    { date: '2024-01-03', open: 2300, high: 2350, low: 2250, close: 2280, volume: 14500000 },
+    { date: '2024-01-04', open: 2280, high: 2400, low: 2260, close: 2320, volume: 17000000 },
+    { date: '2024-01-05', open: 2320, high: 2450, low: 2300, close: 2350, volume: 18000000 }
+  ];
+
+  const timeframes = [
+    { value: '1h', label: '1H' },
+    { value: '4h', label: '4H' },
+    { value: '1d', label: '1D' },
+    { value: '1w', label: '1W' }
+  ];
+
+  return (
+    <div className="w-full max-w-6xl mx-auto p-4 space-y-6">
+      {/* Educational Resources */}
+      <Card className="border-blue-500 border-l-4">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <GraduationCap className="h-5 w-5" />
+            Educational Resources
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                Institute For the Future (IFF)
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Access cutting-edge research and education in blockchain and digital currencies.
+              </p>
+              <a 
+                href="https://www.unic.ac.cy/iff/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline flex items-center gap-1"
+              >
+                Visit IFF Website <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <GraduationCap className="h-4 w-4" />
+                Department of Digital Innovation
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Explore programs in blockchain technology and digital innovation.
+              </p>
+              <a 
+                href="https://www.unic.ac.cy/school-of-business/department-of-digital-innovation/#tab-f8617dbe9468c2c221c" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline flex items-center gap-1"
+              >
+                Visit Department Website <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Market Analysis */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex justify-between items-center">
+            <span>Cryptocurrency Analysis</span>
+            <div className="flex items-center gap-2">
+              <Input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value.toUpperCase())}
+                placeholder="Enter symbol (e.g., ETH, BTC)"
+                className="w-48"
+              />
+              <Button onClick={() => setCryptoSymbol(searchInput)}>
+                <Search className="h-4 w-4 mr-2" />
+                Search
+              </Button>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 mb-6">
+            <div className="flex gap-2">
+              {timeframes.map((tf) => (
+                <Button
+                  key={tf.value}
+                  variant={selectedTimeframe === tf.value ? "default" : "outline"}
+                  onClick={() => setSelectedTimeframe(tf.value)}
+                  size="sm"
+                >
+                  {tf.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Price Chart */}
+          <div className="h-[400px] border border-gray-200 rounded-lg p-4">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-4">
+                <span className="font-mono">O: ${ethData[ethData.length - 1].open}</span>
+                <span className="font-mono">H: ${ethData[ethData.length - 1].high}</span>
+                <span className="font-mono">L: ${ethData[ethData.length - 1].low}</span>
+                <span className="font-mono">C: ${ethData[ethData.length - 1].close}</span>
+              </div>
+              <div className="font-mono">
+                Volume: {ethData[ethData.length - 1].volume.toLocaleString()}
+              </div>
+            </div>
+          {/* Market Analysis Chart */}
+          <div className="h-[400px] bg-[#1e222d] rounded-lg overflow-hidden">
+            {/* Price Info Header */}
+            <div className="flex justify-between items-center p-3 border-b border-gray-700">
+              <div className="flex items-center gap-4 text-white">
+                <span className="font-mono">O: <span className="text-gray-300">$2320</span></span>
+                <span className="font-mono">H: <span className="text-gray-300">$2450</span></span>
+                <span className="font-mono">L: <span className="text-gray-300">$2300</span></span>
+                <span className="font-mono">C: <span className="text-gray-300">$2350</span></span>
+              </div>
+              <div className="font-mono text-gray-300">
+                Volume: 18,000,000
+              </div>
+            </div>
+
+            {/* SVG Chart */}
+            <div className="w-full h-[350px]">
+              <svg width="100%" height="100%" viewBox="0 0 800 350" className="bg-[#1e222d]">
+                {/* Grid Lines */}
+                <g stroke="#2a2e39" strokeWidth="1" opacity="0.5">
+                  <line x1="0" y1="87.5" x2="800" y2="87.5" />
+                  <line x1="0" y1="175" x2="800" y2="175" />
+                  <line x1="0" y1="262.5" x2="800" y2="262.5" />
+                  
+                  <line x1="200" y1="0" x2="200" y2="350" />
+                  <line x1="400" y1="0" x2="400" y2="350" />
+                  <line x1="600" y1="0" x2="600" y2="350" />
+                </g>
+
+                {/* Price Labels */}
+                <g fill="#888888" fontSize="12">
+                  <text x="10" y="91">$2450</text>
+                  <text x="10" y="179">$2350</text>
+                  <text x="10" y="266">$2250</text>
+                </g>
+
+                {/* Candlesticks */}
+                {/* Green (bullish) candles */}
+                <g stroke="#26a69a" fill="#26a69a">
+                  <line x1="100" y1="150" x2="100" y2="200" strokeWidth="2" />
+                  <rect x="90" y="160" width="20" height="30" />
+                  
+                  <line x1="300" y1="120" x2="300" y2="180" strokeWidth="2" />
+                  <rect x="290" y="130" width="20" height="40" />
+                  
+                  <line x1="500" y1="140" x2="500" y2="190" strokeWidth="2" />
+                  <rect x="490" y="150" width="20" height="30" />
+                </g>
+
+                {/* Red (bearish) candles */}
+                <g stroke="#ef5350" fill="#ef5350">
+                  <line x1="200" y1="130" x2="200" y2="190" strokeWidth="2" />
+                  <rect x="190" y="140" width="20" height="40" />
+                  
+                  <line x1="400" y1="160" x2="400" y2="220" strokeWidth="2" />
+                  <rect x="390" y="170" width="20" height="40" />
+                  
+                  <line x1="700" y1="170" x2="700" y2="230" strokeWidth="2" />
+                  <rect x="690" y="180" width="20" height="40" />
+                </g>
+
+                {/* Volume Bars */}
+                <g fill="#404040" opacity="0.5">
+                  <rect x="90" y="300" width="20" height="30" />
+                  <rect x="190" y="300" width="20" height="40" />
+                  <rect x="290" y="300" width="20" height="25" />
+                  <rect x="390" y="300" width="20" height="35" />
+                  <rect x="490" y="300" width="20" height="30" />
+                  <rect x="690" y="300" width="20" height="20" />
+                </g>
+              </svg>
+            </div>
+          </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Pattern Recognition and Education */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Candlestick Patterns</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* Hammer Pattern */}
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-green-500" />
+                  Hammer
+                </h3>
+                <div className="flex items-center gap-4">
+                  <div className="w-4 h-16 relative border-l border-t border-gray-300">
+                    <div className="absolute top-0 w-4 h-4 bg-green-500"></div>
+                    <div className="absolute top-4 w-0.5 h-12 bg-green-500 left-1/2 transform -translate-x-1/2"></div>
+                  </div>
+                  <div className="text-sm">
+                    <p>• Small real body at the top</p>
+                    <p>• Long lower shadow</p>
+                    <p>• Bullish reversal signal</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Morning Star Pattern */}
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-green-500" />
+                  Morning Star
+                </h3>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-end gap-2">
+                    <div className="w-4 h-12 bg-red-500"></div>
+                    <div className="w-4 h-4 bg-gray-400"></div>
+                    <div className="w-4 h-12 bg-green-500"></div>
+                  </div>
+                  <div className="text-sm">
+                    <p>• Three-candle pattern</p>
+                    <p>• Middle candle gaps down</p>
+                    <p>• Strong bullish reversal</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Risk Assessment */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Risk Assessment</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  High volatility - Prices can change dramatically in seconds
+                </AlertDescription>
+              </Alert>
+
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  Technical patterns are not guarantees of future performance
+                </AlertDescription>
+              </Alert>
+
+              <div className="p-4 border rounded-lg">
+                <h3 className="font-semibold mb-2">Pattern Analysis</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center text-green-500">
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    <span>Hammer pattern detected at $2,280</span>
+                  </div>
+                  <div className="flex items-center text-green-500">
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    <span>Morning Star forming at $2,320</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default CryptoForecast;
